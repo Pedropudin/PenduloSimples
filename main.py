@@ -3,11 +3,12 @@ import scipy.constants
 from math import sin
 
 # ======= Constant Values ============== #
-g = scipy.constants.g
-L = 10
-T = 100
-alpha = -10
-beta = 10
+pi = scipy.constants.pi
+g = 9.8
+L = 1
+T = 2*pi
+alpha = 0.7
+beta = 0.7
 
 # ======= Simulation Variables ========= #
 m = 100
