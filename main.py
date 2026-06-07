@@ -89,8 +89,8 @@ def solve_linear_system(m, A, B):
     
     L, U = LU_decomposition(m, A)
 
-    y = solve_triangular_linear_system(m,L,B, False)
-    x = solve_triangular_linear_system(m,U,y, True)
+    y = solve_triangular_linear_system(m,L,B, True)
+    x = solve_triangular_linear_system(m,U,y, False)
 
     return x
 
@@ -134,13 +134,14 @@ def LU_decomposition(m, A):
 # ========= Main ======================= #
 def main():
     a = np.array([
-        [10,2],
-        [1,0]
+        [1,1,1],
+        [2,3,1],
+        [1,0,4]
         ])
 
-    b = np.array([1,1])
+    b = np.array([6,11,13])
 
-    r = solve_linear_system(2, a, b)
+    r = solve_linear_system(3, a, b)
 
     print(r)
 
