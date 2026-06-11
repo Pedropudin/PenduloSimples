@@ -3,8 +3,8 @@
 \usetheme{Madrid}
 \usecolortheme{default}
 
-\title[Pêndulo Simples]{Pêndulo Simples com Newton-Rhapson}
-\subtitle{Resolvendo o pêndulo simples usando o método de Newton-Rhapson}
+\title[Pêndulo Simples]{Pêndulo Simples com Newton-Raphson}
+\subtitle{Resolvendo o pêndulo simples usando o método de Newton-Raphson}
 \author[Gabriel, Pedro e Wiltord]{Gabriel Demba - 15618344\\
 Pedro Martins Oliveira - 13696213\\
 Wiltord Nyakeruma Mosingi - 15595392}
@@ -58,7 +58,7 @@ Wiltord Nyakeruma Mosingi - 15595392}
 
     \begin{equation}
     \begin{split}
-        \theta''(t) - \frac{g}{L}\theta(t) &= 0 \\
+        \theta''(t) + \frac{g}{L}\theta(t) &= 0 \\
         \theta(t) &= \theta_0\cos\left( \sqrt{\frac{g}{L}}t \right)
         \label{eq:pendulo-aproximado}
     \end{split}
@@ -96,18 +96,18 @@ Wiltord Nyakeruma Mosingi - 15595392}
     $G$ consiste de uma aproximação discreta da segunda derivada da equação original.
 \end{frame}
 
-\subsection{Método de Newton-Rhapson}
+\subsection{Método de Newton-Raphson}
 
-\begin{frame}{Método de Newton-Rhapson}
+\begin{frame}{Método de Newton-Raphson}
     Usado para encontrar as raízes de equações (lineares ou não), ou seja, para um dado $f:\mathbb R \to \mathbb R$ encontra $x$ tal que $f(x) = 0$.
     
     \vspace{0.4cm}
     
-    O método precisa de um chute inicial $x_0$, então ele itera criando novos valores de $x$ seguindo a equação \ref{eq:newton-rhapson-iter}.
+    O método precisa de um chute inicial $x_0$, então ele itera criando novos valores de $x$ seguindo a equação \ref{eq:newton-raphson-iter}.
 
     \begin{equation}
         x_{i+1} = x_i - \frac{f(x_i)}{f'(x_i)}
-        \label{eq:newton-rhapson-iter}
+        \label{eq:newton-raphson-iter}
     \end{equation}
 \end{frame}
 
@@ -122,15 +122,71 @@ Wiltord Nyakeruma Mosingi - 15595392}
 
     \vspace{0.2cm}
 
-    Primeiro iteramos a matriz dos coeficientes eliminando a diagonal inferior, isso é feito
+    Considere um sistema como na equação \ref{eq:thomas-system}.
+
+    \begin{equation}
+        \begin{bmatrix} 
+        b_1 & c_1 & 0 & 0 & \cdots & 0 \\ 
+        a_2 & b_2 & c_2 & 0 & \cdots & 0 \\ 
+        0 & a_3 & b_3 & c_3 & \cdots & 0 \\ 
+        \vdots & \vdots & \ddots & \ddots & \ddots & \vdots \\ 
+        0 & 0 & \cdots & a_{n-1} & b_{n-1} & c_{n-1} \\ 
+        0 & 0 & \cdots & 0 & a_n & b_n 
+        \end{bmatrix} 
+        \begin{bmatrix} 
+        x_1 \\ 
+        x_2 \\ 
+        x_3 \\ 
+        \vdots \\ 
+        x_{n-1} \\ 
+        x_n 
+        \end{bmatrix} 
+        = 
+        \begin{bmatrix} 
+        d_1 \\ 
+        d_2 \\ 
+        d_3 \\ 
+        \vdots \\ 
+        d_{n-1} \\ 
+        d_n 
+        \end{bmatrix}
+        \label{eq:thomas-system}
+    \end{equation}
+
+\end{frame}
+
+\begin{frame}{Algoritmo de Thomas}
+    O algoritmo consiste então de realizar uma eliminação transformando a matriz dos coeficientes numa matriz triangular superior.
+    
+    \vspace{0.2cm}
+    
+    Os novos coeficientes são indicados com linha, não precisamos alterar a diagonal principal, usamos as equações \ref{eq:thomas-eliminacao-c} e \ref{eq:thomas-eliminacao-d}.
+
+    \begin{equation}
+        c'_i = \Bigg\{\begin{matrix}
+            c_i/b_i & i=1 \\[0.1em]
+            c_i/(b_i-a_ic'_{i-1}) & \text{outros casos}
+        \end{matrix}
+        \label{eq:thomas-eliminacao-c}
+    \end{equation}
+    
+    \begin{equation}
+        d'_i = \Bigg\{\begin{matrix}
+            d_i/b_i & i=1 \\[0.1em]
+            (d_i-a_id'_{i-1})/(b_i-a_ic'_{i-1}) & \text{outros casos}
+        \end{matrix}
+        \label{eq:thomas-eliminacao-d}
+    \end{equation}
+
+    Feito isso, basta fazer uma substituição regressiva, da mesma forma que já vimos antes.
 \end{frame}
 
 \section{Metodologia}
 
-\subsection{Adaptando Newton-Rhapson para sistema de equações}
+\subsection{Adaptando Newton-Raphson para sistema de equações}
 
-\begin{frame}{Newton-Rhapson para Sistema de Equações}
-    O método de newton-rhapson é usado para encontrar a raiz de funções, não para sistemas de equações.
+\begin{frame}{Newton-Raphson para Sistema de Equações}
+    O método de newton-raphson é usado para encontrar a raiz de funções, não para sistemas de equações.
 
     \vspace{0.3cm}
 
@@ -147,7 +203,7 @@ Wiltord Nyakeruma Mosingi - 15595392}
 
 \end{frame}
 
-\begin{frame}{Newton-Rhapson para Sistema de Equações}
+\begin{frame}{Newton-Raphson para Sistema de Equações}
     É importante reforçar que, no contexto de sistema de $n$ equações temos que:
 
     \begin{table}[]
@@ -194,7 +250,7 @@ Wiltord Nyakeruma Mosingi - 15595392}
 \end{frame}
 
 \begin{frame}{Resolvendo o Pêndulo Simples como PVC}
-    Como vimos, o sistema pode ser descrito como a busca pela raiz de $G$, usando newton-rhapson teremos então que a iteração do sistema é dada pela equação \ref{eq:sistema-pendulo}
+    Como vimos, o sistema pode ser descrito como a busca pela raiz de $G$, usando newton-raphson teremos então que a iteração do sistema é dada pela equação \ref{eq:sistema-pendulo}
 
     \begin{equation}
     \begin{split}
@@ -241,7 +297,7 @@ Wiltord Nyakeruma Mosingi - 15595392}
     Após resolver o sistema, obtemos $\Delta \theta$, do qual podemos obter a próxima iteração do valor de $\vec\theta$, repetimos esse processo até um critério de parada, sendo ele uma quantidade máxima de iterações (usamos para impedir que o cálculo seja feito infinitamente caso não haja convergência) e um erro relativo mínimo, que é calculado como na equação \ref{eq:erro-relativo}.
 
     \begin{equation}
-        \epsilon_r = \frac{\|\theta^{i+1} - \theta^i\|}{\|\theta^{i+1}\|}
+        \epsilon_r = \frac{\|\theta^{i+1} - \theta^i\|_\infty}{\|\theta^{i+1}\|_\infty}
         \label{eq:erro-relativo}
     \end{equation}
 \end{frame}
@@ -257,6 +313,14 @@ Wiltord Nyakeruma Mosingi - 15595392}
         \centering
         \includegraphics[width=0.7\linewidth]{images/graphics/comparacao_solucoes.png}
         \label{fig:comp-solucoes}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Chutes Iniciais}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.7\linewidth]{images/graphics/erro_convergencia.png}
+        \label{fig:comp-solucoes-erro}
     \end{figure}
 \end{frame}
 
@@ -297,21 +361,3 @@ Wiltord Nyakeruma Mosingi - 15595392}
 \end{frame}
 
 \end{document}
-
-\section{Using Blocks}
-
-\begin{frame}{Highlighting Information with Blocks}
-  
-  \begin{block}{Standard Block}
-    This block adopts the presentation's primary blue theme. It is excellent for definitions, main theorems, or key takeaways.
-  \end{block}
-
-  \begin{alertblock}{Alert Block}
-    This red block is designed to draw immediate attention to critical information, warnings, or crucial conditions.
-  \end{alertblock}
-
-  \begin{exampleblock}{Example Block}
-    This green block is typically used to separate practical examples or proofs from the main theoretical content.
-  \end{exampleblock}
-  
-\end{frame}
