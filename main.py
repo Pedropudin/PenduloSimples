@@ -89,7 +89,7 @@ def main():
     beta = 0.7
     g = 9.8
     L = 1.0
-    m = 1000
+    m = 100
 
     # Parâmetros numéricos
     tol = 1e-10
@@ -374,7 +374,8 @@ def main():
             titulo_dir="Mercúrio",
             g_esq=g_terra,
             g_dir=g_mercurio,
-            titulo_janela="Pêndulo simples: Terra vs Mercúrio"
+            titulo_janela="Pêndulo simples: Terra vs Mercúrio",
+            #salvar_arquivo="resultados/simulacao_terra_mercurio.gif"
         )
 
     fechar_graficos()

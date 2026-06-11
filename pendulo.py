@@ -72,7 +72,7 @@ def calcular_jacobiana(theta, h, g, L):
     Monta a Jacobiana completa.
 
     Esta função é útil para conferência e depuração.
-    O método principal usa apenas as diagonais.
+    O método principal usa apenas as diagonais. 
     """
     lower, diag, upper = montar_diagonais_jacobiana(theta, h, g, L)
     m = diag.size
@@ -186,7 +186,7 @@ def newton_raphson_pendulo(
         erros.append(erro_relativo)
         residuos.append(residuo)
 
-        if erro_relativo < tol:
+        if erro_relativo < tol and residuo < tol:
             return theta_novo, erros, residuos, k + 1
 
         theta_atual = theta_novo

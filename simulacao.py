@@ -1,6 +1,9 @@
 import math
+import os
+
 import pygame
 import numpy as np
+from PIL import Image
 
 
 def animar_dois_pendulos(
@@ -13,7 +16,9 @@ def animar_dois_pendulos(
     titulo_dir="Mercúrio",
     g_esq=None,
     g_dir=None,
-    titulo_janela="Comparação de pêndulos"
+    titulo_janela="Comparação de pêndulos",
+    salvar_arquivo=None,
+    max_frames_salvos=200
 ):
     """
     Anima dois pêndulos lado a lado usando soluções numéricas já calculadas.
@@ -47,6 +52,14 @@ def animar_dois_pendulos(
 
         titulo_janela:
             Título da janela do Pygame.
+
+        salvar_arquivo:
+            Caminho opcional para salvar a animação como GIF.
+            Exemplo: "resultados/simulacao_terra_mercurio.gif".
+
+        max_frames_salvos:
+            Número máximo aproximado de frames salvos no GIF.
+            Esse limite evita arquivos muito grandes quando a malha tem muitos pontos.
     """
 
     theta_esq = np.asarray(theta_esq, dtype=float)
@@ -66,6 +79,9 @@ def animar_dois_pendulos(
 
     if T <= 0:
         raise ValueError("T deve ser positivo.")
+
+    if max_frames_salvos <= 0:
+        raise ValueError("max_frames_salvos deve ser positivo.")
 
     # Inicialização do Pygame
     pygame.init()
@@ -111,6 +127,14 @@ def animar_dois_pendulos(
 
     # FPS visual. Pode ajustar para 20, 30, 40 se quiser.
     fps = 30
+
+    # Preparação opcional para salvar GIF.
+    # Para evitar arquivos gigantes, salvamos no máximo max_frames_salvos
+    # ao longo de uma volta completa da solução discreta.
+    frames_salvos = []
+    indices_salvos = set()
+    passo_gif = max(1, math.ceil(len(theta_esq) / max_frames_salvos))
+    indices_para_salvar = set(range(0, len(theta_esq), passo_gif))
 
     frame = 0
     rodando = True
@@ -233,10 +257,39 @@ def animar_dois_pendulos(
 
         pygame.display.flip()
 
+        # Captura opcional do frame para o GIF.
+        # Capturamos cada índice selecionado uma única vez.
+        if (
+            salvar_arquivo is not None
+            and indice in indices_para_salvar
+            and indice not in indices_salvos
+        ):
+            imagem = pygame.surfarray.array3d(tela)
+            imagem = np.transpose(imagem, (1, 0, 2))
+            frames_salvos.append(Image.fromarray(imagem))
+            indices_salvos.add(indice)
+
         if not pausado:
             frame += 1
 
         clock.tick(fps)
+
+    if salvar_arquivo is not None and frames_salvos:
+        pasta_saida = os.path.dirname(salvar_arquivo)
+        if pasta_saida:
+            os.makedirs(pasta_saida, exist_ok=True)
+
+        duracao_ms = max(1, int(1000 * passo_gif / fps))
+
+        frames_salvos[0].save(
+            salvar_arquivo,
+            save_all=True,
+            append_images=frames_salvos[1:],
+            duration=duracao_ms,
+            loop=0
+        )
+
+        print(f"Animação salva em: {salvar_arquivo}")
 
     pygame.quit()
 
