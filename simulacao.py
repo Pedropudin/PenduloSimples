@@ -126,7 +126,7 @@ def animar_dois_pendulos(
     h = T / numero_intervalos
 
     # FPS visual. Pode ajustar para 20, 30, 40 se quiser.
-    fps = 30
+    fps = 20
 
     # Preparação opcional para salvar GIF.
     # Para evitar arquivos gigantes, salvamos no máximo max_frames_salvos
